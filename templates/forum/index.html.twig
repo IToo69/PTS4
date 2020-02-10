@@ -14,9 +14,11 @@
             <div class="content">
                 <img src="{{ article.image }}" alt="">
                 {{ article.contenu | raw  }}
+                </br>
                 <a href = "{{ path('forum_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
             </div>
-        </article>   
+        </article>
+        <hr>   
     {% endfor %}
     
 
