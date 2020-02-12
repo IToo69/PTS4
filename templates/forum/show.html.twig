@@ -5,6 +5,7 @@
         <h2>{{ article.titre }}</h2>
         <strong><div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y')}} à {{ article.createdAt | date('H:i')}}
         dans la catégorie {{ article.categorie.titre }}</div></strong>
+        <br>
         <div class="content">
             <img src="{{ article.image }}" alt="">
             {{ article.contenu | raw}}
@@ -19,7 +20,7 @@
             <div class="comment">
                 <div class="row">
                     <div class="col-3">
-                        {{commentaire.auteur}} (<small>{{ commentaire.createdAt | date('d/m/Y à H:i')}}</small>)
+                        <p class="text-success">{{commentaire.auteur}}<p> (<small>{{ commentaire.createdAt | date('d/m/Y à H:i')}}</small>)
                     </div>
                     <div class="col">
                         {{ commentaire.contenu | raw }}
