@@ -11,7 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Entity\Article;
+use App\Entity\Categorie;
 use App\Repository\ArticleRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
 
@@ -50,6 +52,10 @@ class ForumController extends AbstractController
 
         $form = $this->createFormBuilder($article)
                      ->add('titre')
+                     ->add('categorie', EntityType::class, [
+                         'class' => Categorie::class,
+                         'choice_label' => 'titre'
+                     ])
                      ->add('contenu')
                      ->add('image')
                      ->getForm();

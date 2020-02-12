@@ -9,13 +9,13 @@
     {% for article in articles %}
         <article>
             <h2>{{ article.titre }}</h2>
-            <div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i')}}
-            dans la catégorie Politique</div>
+            <strong><div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i')}}
+            dans la catégorie {{ article.categorie.titre }}</div></strong>
             <div class="content">
                 <img src="{{ article.image }}" alt="">
                 {{ article.contenu | raw  }}
                 </br>
-                <a href = "{{ path('forum_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
+                <a href = "{{ path('forum_show', {'id': article.id}) }}" class="btn btn-primary">Réagir</a>
             </div>
         </article>
         <hr>   

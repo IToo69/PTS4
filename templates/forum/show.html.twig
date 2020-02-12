@@ -3,12 +3,29 @@
 {% block body %}
     <article>
         <h2>{{ article.titre }}</h2>
-        <div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y')}} à {{ article.createdAt | date('H:i')}}
-        dans la catégorie Politique</div>
+        <strong><div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y')}} à {{ article.createdAt | date('H:i')}}
+        dans la catégorie {{ article.categorie.titre }}</div></strong>
         <div class="content">
             <img src="{{ article.image }}" alt="">
             {{ article.contenu | raw}}
         </div>
         
     </article>
+    <br>
+
+    <section id="commentaires">
+        {% for commentaire in article.commentaires  %}
+        <hr>
+            <div class="comment">
+                <div class="row">
+                    <div class="col-3">
+                        {{commentaire.auteur}} (<small>{{ commentaire.createdAt | date('d/m/Y à H:i')}}</small>)
+                    </div>
+                    <div class="col">
+                        {{ commentaire.contenu | raw }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </section>
 {% endblock %}
