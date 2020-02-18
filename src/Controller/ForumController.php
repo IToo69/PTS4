@@ -13,19 +13,48 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Entity\Article;
 use App\Entity\Categorie;
 use App\Repository\ArticleRepository;
+use App\Repository\CategorieRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Commentaire;
+use App\Entity\Utilisateur;
+use App\Form\CommentType;
 
 
 
 
 class ForumController extends AbstractController
 {
+
+    /**
+     * @Route("/forum/categorie/{id}", name="forum_categorie")
+     */
+    public function categorie(Categorie $categorie){
+        
+
+        return $this->render('forum/categorie.html.twig', ['categorie' => $categorie]);
+    }
+
+    /**
+     * @Route("/forum/profil/{id}", name="forum_profil")
+     */
+    public function profil(Utilisateur $user){
+        //$utilisateur=$this->getUser();
+        
+        return $this->render('forum/profil.html.twig', ['user' => $user]);
+    }
+
+    
+
     /**
      * @Route("/forum", name="forum")
      */
     public function index( ArticleRepository $repo)
     {
-        $articles = $repo->findAll();
+ 
+ 
+            $articles = $repo->findBy([], ['createdAt' => 'DESC']); 
+        
+
         
         return $this->render('forum/index.html.twig', [
             'controller_name' => 'ForumController',
@@ -36,8 +65,19 @@ class ForumController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function home(){
-        return $this->render('forum/home.html.twig');
+    public function home(EntityManagerInterface $manager, CategorieRepository $repo, ArticleRepository $repos){
+
+        $articles = $repos->findAll();
+        $categories = $repo->findAll();
+
+        if($this->getUser() != null){
+        $user=$this->getUser();
+        $user->setLastCo(new \DateTime());
+        
+        $manager->persist($user);
+        $manager->flush();
+        }
+        return $this->render('forum/home.html.twig', ['categories' => $categories, 'articles' => $articles]);
     }
 
     /**
@@ -46,8 +86,10 @@ class ForumController extends AbstractController
      */
     public function form(Article $article = null,Request $request, EntityManagerInterface $manager){
 
+        $creer=false;
         if(!$article){
             $article = new Article();
+            $creer=true;
         }
 
         $form = $this->createFormBuilder($article)
@@ -57,14 +99,20 @@ class ForumController extends AbstractController
                          'choice_label' => 'titre'
                      ])
                      ->add('contenu')
-                     ->add('image')
                      ->getForm();
 
         $form->handleRequest($request);
+        $user=$this->getUser();    
+        if($creer == false){
+            if($user != $article->getUtilisateur()){
+                return $this->redirectToRoute('forum');
+            }
+        }            
 
         if($form->isSubmitted() && $form->isValid()){
             if(!$article->getId()){
                 $article->setCreatedAt(new \DateTime());
+                $article->setUtilisateur($this->getUser());
             }
 
             $manager->persist($article);
@@ -83,10 +131,31 @@ class ForumController extends AbstractController
     /**
      * @Route("/forum/{id}", name="forum_show")
      */
-    public function show(Article $article){
+    public function show(Article $article, Request $request, EntityManagerInterface $manager){
+        $comment = new Commentaire();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        $test=$this->getUser();
+
+        if($form->isSubmitted() && $form->isValid()){
+            $comment->setCreatedAt(new \DateTime())
+                    ->setArticle($article)
+                    ->setUtilisateur($test);
+
+            $manager->persist($comment);
+            $manager->flush();
+
+            return $this->redirectToRoute('forum_show', ['id' =>$article->getId()]);
+        }
+
         return $this->render('forum/show.html.twig',[
-            'article' => $article
+            'article' => $article,
+            'commentForm' => $form->createView()
         ]);
     }
+
+    
+
 
 }

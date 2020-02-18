@@ -1,13 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    
     <article>
         <h2>{{ article.titre }}</h2>
         <strong><div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y')}} à {{ article.createdAt | date('H:i')}}
-        dans la catégorie {{ article.categorie.titre }}</div></strong>
-        <br>
+        par <a href="{{ path('forum_profil', {'id': article.utilisateur.id}) }}" class="text-success">{{ article.utilisateur.pseudo }}</a></div></strong>
+        {% if article.categorie.titre == 'Sport'%}
+            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-warning">{{ article.categorie.titre }}</a>
+            {% elseif article.categorie.titre == 'Cinéma'%}
+            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-info">{{ article.categorie.titre }}</a>
+            {% else %}
+            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-dark">{{ article.categorie.titre }}</a>
+        {% endif %}
+        <br><br>
         <div class="content">
-            <img src="{{ article.image }}" alt="">
             {{ article.contenu | raw}}
         </div>
         
@@ -15,18 +22,43 @@
     <br>
 
     <section id="commentaires">
-        {% for commentaire in article.commentaires  %}
+
+        {% if  article.commentaires.count() == 0 %}
+        <h5>Aucuns commentaires</h5>
+        {% elseif  article.commentaires.count() == 1 %}
+        <h5>{{ article.commentaires | length }} commentaire :</h5>
+        {% else %}
+        <h5>{{ article.commentaires | length }} commentaires :</h5>
+        {% endif %}
         <hr>
+        {% for commentaire in article.commentaires  %}
             <div class="comment">
                 <div class="row">
                     <div class="col-3">
-                        <p class="text-success">{{commentaire.auteur}}<p> (<small>{{ commentaire.createdAt | date('d/m/Y à H:i')}}</small>)
+                        <p><a href="{{ path('forum_profil', {'id': commentaire.utilisateur.id}) }}" class="text-success">{{commentaire.utilisateur.pseudo}}</a></p> 
+                        (<small>{{ commentaire.createdAt | date('d/m/Y à H:i')}}</small>)
                     </div>
                     <div class="col">
                         {{ commentaire.contenu | raw }}
                     </div>
                 </div>
             </div>
+            <hr>
         {% endfor %}
+
+        {% if app.user %}
+
+        {{ form_start(commentForm) }}
+        
+        {{ form_row(commentForm.contenu, {'label': 'Écrire un commentaire :', 'attr': {'placeholder': "Votre commentaire"}})}}
+        <button type="submit" class="btn btn-success">Commenter</button>
+        {{ form_end(commentForm) }}
+
+        {% else %}
+            <h5>Vous devez vous connecter pour commenter</h5>
+            <a href="{{ path('security_login') }}" class="btn btn-primary">Se connecter</a>
+        {% endif %}
+
     </section>
+    <br>
 {% endblock %}

@@ -4,16 +4,32 @@
 
 {% block body %}
 
-<section class="articles">
+    <br>
+    {% if articles | length == 0 %}
+    <h5>Aucun article publié</h5>
+    {% elseif articles | length == 1 %}
+    <h5>1 article publié</h5>
+    {% else %}
+    <h5>{{ articles | length }} articles publiés</h5>
+    {% endif %}
+
+    <hr>
 
     {% for article in articles %}
         <article>
-            <h2>{{ article.titre }}</h2>
+            <h3>{{ article.titre }}</h3>
             <strong><div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i')}}
-            dans la catégorie {{ article.categorie.titre }}</div></strong>
-            <br>
+            par <a href="{{ path('forum_profil', {'id': article.utilisateur.id}) }}" class="text-success">{{ article.utilisateur.pseudo }}</a></div></strong>
+            {% if article.categorie.titre == 'Sport'%}
+            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-warning">{{ article.categorie.titre }}</a>
+            {% elseif article.categorie.titre == 'Cinéma'%}
+            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-info">{{ article.categorie.titre }}</a>
+            {% else %}
+            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-dark">{{ article.categorie.titre }}</a>
+            {% endif %}
+            <br><br>
             <div class="content">
-                <img src="{{ article.image }}" alt="">
+                {#<img src="{{ article.image }}" alt="">#}
                 {{ article.contenu | raw | slice(0, 200)  }}...
                 </br></br>
                 <a href = "{{ path('forum_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>

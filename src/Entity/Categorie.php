@@ -30,6 +30,7 @@ class Categorie
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="categorie")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $articles;
 

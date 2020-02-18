@@ -31,11 +31,6 @@ class Article
      */
     private $contenu;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\Url(message = "L'url'{{ value }}' n'est pas valide")
-     */
-    private $image;
 
     /**
      * @ORM\Column(type="datetime")
@@ -51,8 +46,17 @@ class Article
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Commentaire", mappedBy="article", orphanRemoval=true)
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $commentaires;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="articles")
+     * @ORM\JoinColumn(nullable=false)
+     * 
+     */
+    private $utilisateur;
+
 
     public function __construct()
     {
@@ -84,18 +88,6 @@ class Article
     public function setContenu(string $contenu): self
     {
         $this->contenu = $contenu;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): self
-    {
-        $this->image = $image;
 
         return $this;
     }
@@ -154,4 +146,18 @@ class Article
 
         return $this;
     }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    
 }

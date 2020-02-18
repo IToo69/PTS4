@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {% if user == app.user%}
+    <h1>Votre profil</h1>
+    {% else %}
+    <h1>Profil de {{ user.pseudo }}</h1>
+    {% endif %}
+    <hr>
+
+    <h6> Première connexion le {{ user.createdAt | date('d/m/Y à H:i')}}</h6>
+    <h6> Dernière connexion le {{ user.lastCo | date('d/m/Y à H:i')}}</h6>
+    
+    {% if user== app.user %}
+    <hr>
+    <div class="profil">
+        <div class="row">
+            <div class="col">
+                <h6>Adresse mail : <p class="text-success">{{user.email}}</p></h6>
+            </div>
+            <div class="col">
+                <h6>Nom d'utilisateur  : <p class="text-success">{{user.pseudo}}</p></h6>
+                <button type="button" class="btn btn-primary btn-sm disabled">Modifier</button>
+            </div>
+            <div class="col">
+                <h6>Mot de passe : <p class="text-success">*********</p></h6>
+                <button type="button" class="btn btn-primary btn-sm disabled">Modifier</button>
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+    <br>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <br>
+
+    {% if user.articles.count() == 0 %}
+    <h4>Aucun article publié</h4>
+    {% elseif user.articles.count() == 1 %}
+    <h4>{{ user.articles.count() }} article publié</h4>
+    {% else %}
+    <h4>{{ user.articles.count() }} articles publiés</h4>
+    {% endif %}
+
+        {% for article in user.articles  %}
+        <hr>
+            <div class="comment">
+                <div class="row">
+                    <div class="col-3">
+                        <p class="text-success">{{article.utilisateur.pseudo}}<p> (<small>{{ article.createdAt | date('d/m/Y à H:i')}}</small>)
+                    </div>
+                    <div class="col-3">
+                        <h5>{{article.titre}}</h5>
+                        {% if article.categorie.titre == 'Sport'%}
+                            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-warning">{{ article.categorie.titre }}</a>
+                            {% elseif article.categorie.titre == 'Cinéma'%}
+                            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-info">{{ article.categorie.titre }}</a>
+                            {% else %}
+                            <a href = "{{ path('forum_categorie', {'id': article.categorie.id}) }}" class="badge badge-dark">{{ article.categorie.titre }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-primary btn-sm" href="{{ path('forum_show', {'id': article.id}) }}">Lire</a>
+                    </div>
+                    {% if user== app.user %}
+                    <div class="col">
+                        <a class="btn btn-primary btn-sm" href="{{ path('forum_edit', {'id': article.id}) }}">Modifier</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+        {% endfor %}
+
+    <br>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <br>
+
+    {% if user.commentaires.count() == 0 %}
+    <h4>Aucun commentaire publié</h4>
+    {% elseif user.commentaires.count() == 1 %}
+    <h4>{{ user.commentaires.count() }} commentaire publié</h4>
+    {% else %}
+    <h4>{{ user.commentaires.count() }} commentaires publiés</h4>
+    {% endif %}
+
+    {% for commentaire in user.commentaires  %}
+    <hr>
+            <div class="comment">
+                <div class="row">
+                    <div class="col-3">
+                        <p class="text-success">{{commentaire.utilisateur.pseudo}}<p> (<small>{{ commentaire.createdAt | date('d/m/Y à H:i')}}</small>)
+                    </div>
+                    
+                    <div class="col-3">
+                        <h5>{{commentaire.article.titre}}</h5>
+                        {% if commentaire.article.categorie.titre == 'Sport'%}
+                            <a href = "{{ path('forum_categorie', {'id': commentaire.article.categorie.id}) }}" class="badge badge-warning">{{ commentaire.article.categorie.titre }}</a>
+                            {% elseif commentaire.article.categorie.titre == 'Cinéma'%}
+                            <a href = "{{ path('forum_categorie', {'id': commentaire.article.categorie.id}) }}" class="badge badge-info">{{ commentaire.article.categorie.titre }}</a>
+                            {% else %}
+                            <a href = "{{ path('forum_categorie', {'id': commentaire.article.categorie.id}) }}" class="badge badge-dark">{{ commentaire.article.categorie.titre }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        {{ commentaire.contenu | raw | slice(0, 20) }}...
+                    </div>
+                    <div class="col">
+                        <a class="btn btn-primary btn-sm" href="{{ path('forum_show', {'id': commentaire.article.id}) }}">Lire</a>
+                    </div>
+                </div>
+            </div>
+            
+        {% endfor %}
+
+{% endblock %}

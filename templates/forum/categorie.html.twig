@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Catégorie {{ categorie.titre }}</h1>
+    {% if categorie.articles.count() == 0 %}
+    <h4>Aucun article publié dans cette catégorie</h4>
+    {% elseif categorie.articles.count() == 1 %}
+    <h4>{{ categorie.articles.count() }} article publié dans cette catégorie</h4>
+    {% else %}
+    <h4>{{ categorie.articles.count() }} articles publiés dans cette catégorie</h4>
+    {% endif %}
+    {% if categorie.titre == 'Sport'%}
+            <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="badge badge-warning">{{ categorie.titre }}</a>
+            {% elseif categorie.titre == 'Cinéma'%}
+            <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="badge badge-info">{{ categorie.titre }}</a>
+            {% else %}
+            <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="badge badge-dark">{{ categorie.titre }}</a>
+    {% endif %}
+    <hr>
+
+    {% for article in categorie.articles %}
+        <article>
+            <h3>{{ article.titre | slice(0, 50)}}</h3>
+            <strong><div class="metadata">Ecrit le {{ article.createdAt | date('d/m/Y') }} à {{ article.createdAt | date('H:i')}}
+            par <a href="{{ path('forum_profil', {'id': article.utilisateur.id}) }}" class="text-success">{{ article.utilisateur.pseudo }}</a></div></strong>
+            <br>
+            <div class="content">
+                {#<img src="{{ article.image }}" alt="">#}
+                {{ article.contenu | raw | slice(0, 100)  }}...
+                </br></br>
+                <a href = "{{ path('forum_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
+            </div>
+        </article>
+        <hr>   
+    {% endfor %}
+
+{% endblock %}

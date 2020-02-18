@@ -17,9 +17,10 @@ class Commentaire
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Utilisateur", inversedBy="commentaires")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $auteur;
+    private $utilisateur;
 
     /**
      * @ORM\Column(type="text")
@@ -42,14 +43,14 @@ class Commentaire
         return $this->id;
     }
 
-    public function getAuteur(): ?string
+    public function getUtilisateur(): ?Utilisateur
     {
-        return $this->auteur;
+        return $this->utilisateur;
     }
 
-    public function setAuteur(string $auteur): self
+    public function setUtilisateur(?Utilisateur $utilisateur): self
     {
-        $this->auteur = $auteur;
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

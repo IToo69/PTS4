@@ -1,0 +1,31 @@
+-- Doctrine Migration File Generated on 2020-02-18 15:48:22
+
+-- Version 20200216141745
+ALTER TABLE article DROP FOREIGN KEY FK_23A0E66FB88E14F;
+DROP INDEX IDX_23A0E66FB88E14F ON article;
+ALTER TABLE article DROP auteur_id;
+ALTER TABLE article ADD CONSTRAINT FK_23A0E66FB88E14F FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id);
+CREATE INDEX IDX_23A0E66FB88E14F ON article (utilisateur_id);
+INSERT INTO migration_versions (version, executed_at) VALUES ('20200216141745', CURRENT_TIMESTAMP);
+
+-- Version 20200216181559
+ALTER TABLE utilisateur ADD created_at DATETIME NOT NULL, ADD last_co DATETIME NOT NULL;
+INSERT INTO migration_versions (version, executed_at) VALUES ('20200216181559', CURRENT_TIMESTAMP);
+
+-- Version 20200216182112
+ALTER TABLE utilisateur ADD created_at DATETIME NOT NULL, ADD last_co DATETIME NOT NULL;
+INSERT INTO migration_versions (version, executed_at) VALUES ('20200216182112', CURRENT_TIMESTAMP);
+
+-- Version 20200216182233
+ALTER TABLE article ADD CONSTRAINT FK_23A0E66FB88E14F FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id);
+CREATE INDEX IDX_23A0E66FB88E14F ON article (utilisateur_id);
+ALTER TABLE utilisateur ADD created_at DATETIME NOT NULL, ADD last_co DATETIME NOT NULL;
+INSERT INTO migration_versions (version, executed_at) VALUES ('20200216182233', CURRENT_TIMESTAMP);
+
+-- Version 20200216182558
+ALTER TABLE utilisateur ADD created_at DATETIME NOT NULL, ADD last_co DATETIME NOT NULL;
+INSERT INTO migration_versions (version, executed_at) VALUES ('20200216182558', CURRENT_TIMESTAMP);
+
+-- Version 20200218154058
+ALTER TABLE utilisateur ADD role LONGTEXT NOT NULL COMMENT '(DC2Type:array)';
+INSERT INTO migration_versions (version, executed_at) VALUES ('20200218154058', CURRENT_TIMESTAMP);

@@ -2,14 +2,58 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Bienvenue dans ce forum</h1>
+    <h1>Forum PTS4</h1>
+    <p>Bienvenu sur le forum dédié au projet tutoré n°4. Vous pouvez y discuter, débattre et poser des questions. L'ensemble de l'équipe
+    vous incite à créer un compte afin de profiter pleinement de l'expérience proposée par notre outil.</p>
 
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed hendrerit placerat est, vitae imperdiet ligula rutrum quis. Curabitur nec eleifend dui, sed euismod purus. Phasellus aliquet consectetur risus in ultricies. Suspendisse lorem sem, 
-    ultricies a iaculis faucibus, imperdiet nec lectus. Vivamus gravida, ex eu vehicula imperdiet, purus turpis bibendum nibh,
-    eget laoreet sapien nulla eleifend diam. Vivamus varius varius velit, eget finibus orci interdum vitae. Ut at hendrerit ex. 
-    Vestibulum volutpat nisl diam, a posuere odio lobortis sed.</p>
-    <p>Lorem ipsum dolor sjit amet, consectetur adipiscing elit. Sed hendrerit placerat est, vitae imperdiet ligula rutrum quis. Curabitur nec eleifend dui, sed euismod purus. Phasellus aliquet consectetur risus in ultricies. Suspendisse lorem sem, 
-    ultricies a iaculis faucibus, imperdiet nec lectus. Vivamus gravida, ex eu vehicula imperdiet, purus turpis bibendum nibh,
-    eget laoreet sapien nulla eleifend diam. Vivamus varius varius velit, eget finibus orci interdum vitae. Ut at hendrerit ex. 
-    Vestibulum volutpat nisl diam, a posuere odio lobortis sed.</p>
+    <div class="list-group">
+      <a href="{{ path('forum') }}" class="list-group-item list-group-item-action flex-column align-items-start active">
+      <h4>Voir tous les articles</h4>
+        <div class="d-flex w-100 justify-content-between">
+          <span class="mb-1"></span>
+          {% if  articles == 0 %}
+          <small>Aucun article</small>
+          {% elseif  articles == 1 %}
+           <small>1 article</small>
+          {% else %}
+          <small>{{articles | length}} articles</small>
+          {% endif %}
+        </div>
+        <p class="mb-1">Vous y trouverez tous les articles publiés sur le forum.</p>
+      </a>
+</div>
+
+    <br>
+    <br>
+    <h4>Catégories :</h4>
+
+{% for categorie in categories %}
+<div class="list-group">
+  <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="list-group-item list-group-item-action flex-column align-items-start">
+  <h4>{{categorie.titre}}</h4>
+  
+    <div class="d-flex w-100 justify-content-between">
+      <span class="mb-1"></span>
+      {% if  categorie.articles.count() == 0 %}
+        <span class="badge badge-primary badge-pill">Pas d'article</span>
+      {% elseif  categorie.articles.count() == 1 %}
+        <span class="badge badge-primary badge-pill">1 article</span>
+      {% else %}
+        <span class="badge badge-primary badge-pill">{{ categorie.articles | length }} articles</span>
+      {% endif %}
+    </div>
+    <p class="mb-1">{{categorie.description}}</p>
+  </a>
+  <small>{% if categorie.titre == 'Sport'%}
+            <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="badge badge-warning">{{ categorie.titre }}</a>
+            {% elseif categorie.titre == 'Cinéma'%}
+            <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="badge badge-info">{{ categorie.titre }}</a>
+            {% else %}
+            <a href = "{{ path('forum_categorie', {'id': categorie.id}) }}" class="badge badge-dark">{{ categorie.titre }}</a>
+  {% endif %}</small>
+
+</div>
+<br>
+
+{% endfor %}
 {% endblock body %}
